@@ -4,10 +4,12 @@
 
 #define LED4_PIN  GPIO_Pin_12
 
-GPIO_InitTypeDef  GPIO_InitStructure;
 
 void GPIO_Setup(void)
 {
+
+  GPIO_InitTypeDef  GPIO_InitStructure;
+
   /* GPIOG Peripheral clock enable */
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
 

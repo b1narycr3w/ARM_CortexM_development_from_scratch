@@ -16,7 +16,7 @@ SOURCES += $(addprefix $(ST_STD_PERIPH_LIB)/src/, \
 	   stm32f4xx_rcc.c \
 	   )
 
-$(info SOURCES=$(SOURCES))
+#$(info SOURCES=$(SOURCES))
 OBJECTS = $(SOURCES:.c=.o)
 
 
@@ -42,6 +42,8 @@ all: $(TARGET).elf $(TARGET).bin $(TARGET).diss
 
 %.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
+
+.PRECIOUS: %.o
 
 clean:
 	-rm -rf $(TARGET).elf $(TARGET).bin $(TARGET).map $(TARGET).diss $(OBJECTS)
