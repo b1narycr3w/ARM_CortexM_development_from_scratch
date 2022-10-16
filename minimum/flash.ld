@@ -23,6 +23,7 @@ SECTIONS
   {
     *(.text)
     *(.text*)
+    . = ALIGN(4);
     _etext = .;
   } > flash
 
@@ -30,6 +31,7 @@ SECTIONS
   {
     *(.rodata)
     *(.rodata*)
+    . = ALIGN(4);
   } > flash
 
   _sidata = LOADADDR(.data);
@@ -39,6 +41,7 @@ SECTIONS
     _sdata = .;
     *(.data)
     *(.data*)
+    . = ALIGN(4);
     _edata = .;
   } > ram AT > flash
 
@@ -47,10 +50,8 @@ SECTIONS
     _sbss = .;
     *(.bss)
     *(.bss*)
-
     . = ALIGN(4);
     _ebss = .;
   } > ram
-
 
 }
