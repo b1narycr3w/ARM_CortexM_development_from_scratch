@@ -6,8 +6,8 @@
 #define GPIOD_ODR (*(uint32_t *)0x40020C14UL)
 
 
-//uint8_t buff[32];
-//uint8_t my_init_data = 37;
+uint8_t buff[32];
+uint8_t my_init_data = 37;
 
 void delay(uint32_t cnt)
 {
@@ -17,7 +17,7 @@ void delay(uint32_t cnt)
 int main(void)
 {
 
-  //uint8_t myvar[300] = {0};
+ // uint8_t myvar[300] = {0};
 
   // Enable GPIOD clock
   RCC_AHB1ENR |= 0x08;

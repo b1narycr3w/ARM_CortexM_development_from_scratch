@@ -15,12 +15,8 @@ void Default_Handler(void)
     while(1);
 }
 
-//void __attribute__((naked)) Reset_Handler(void)
 void Reset_Handler(void)
 {
-
-//  __asm__ __volatile__ ("ldr r0,=_estack");    
-//  __asm__ __volatile__ ("mov sp, r0");    
 
   uint32_t *psrc = &_sidata;
   uint32_t *pdst = &_sdata;
