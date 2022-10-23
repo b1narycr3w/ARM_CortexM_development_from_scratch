@@ -8,6 +8,7 @@
 
 uint8_t buff[32];
 uint8_t my_init_data = 37;
+char *my_string = "Hello World!\n";
 
 void delay(uint32_t cnt)
 {
