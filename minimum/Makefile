@@ -6,7 +6,7 @@ OBJDUMP=$(TOOLCHAIN_PREFIX)objdump
 PROJECT=blinky
 BUILD_DIR=build
 
-LINKER_SCRIPT=flash.ld
+LINKER_SCRIPT=startup/flash.ld
 
 CPPFLAGS=
 CFLAGS=-Wall \
@@ -27,7 +27,7 @@ SOURCES = main.c startup.c
 OBJECTS = $(addprefix $(BUILD_DIR)/, $(SOURCES:.c=.o))
 
 $(info OBJECTS = $(OBJECTS))
-VPATH = src/
+VPATH = src:startup
 
 $(BUILD_DIR)/$(PROJECT): $(OBJECTS) 
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
