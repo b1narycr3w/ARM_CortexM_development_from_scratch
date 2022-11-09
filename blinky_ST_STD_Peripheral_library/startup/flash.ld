@@ -65,7 +65,7 @@ SECTIONS
     _end = .;
   } > ram
 
-/*
+
   ._user_heap_stack :
   {
     . = ALIGN(8);
@@ -75,5 +75,4 @@ SECTIONS
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
   } >ram
-*/
 }

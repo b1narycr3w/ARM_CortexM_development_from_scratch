@@ -162,7 +162,7 @@ int main(void)
 
     printf("Test\r\n");
     GPIO_ToggleBits(GPIOD, LED4_PIN);
-    delay(100000);
+    delay(500000);
   }
   return 0;
 }
