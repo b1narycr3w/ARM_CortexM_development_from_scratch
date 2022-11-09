@@ -5,12 +5,15 @@ LD=$(CC)
 OBJCOPY=$(TOOLCHAINi_PREFIX)objcopy
 OBJDUMP=$(TOOLCHAINi_PREFIX)objdump
 
-ST_STD_PERIPH_LIB = ../lib/STM32F4xx_StdPeriph_Driver
-CMSIS_PATH = ../lib/CMSIS
+PROJECT=blinky
+BUILD_DIR=build
 
-TARGET=main
+ST_STD_PERIPH_LIB = lib/STM32F4xx_StdPeriph_Driver
+CMSIS_PATH = lib/CMSIS
 
-SOURCES = main.c startup.c
+LINKER_SCRIPT = startup/flash.ld
+
+SOURCES = src/main.c startup/startup.c
 SOURCES += $(addprefix $(ST_STD_PERIPH_LIB)/src/, \
 	   stm32f4xx_gpio.c \
 	   stm32f4xx_rcc.c \
@@ -19,34 +22,43 @@ SOURCES += $(addprefix $(ST_STD_PERIPH_LIB)/src/, \
 
 #$(info SOURCES=$(SOURCES))
 OBJECTS = $(SOURCES:.c=.o)
+$(info OBJECTS = $(OBJECTS))
+
+CFLAGS=-Wall \
+       -mcpu=cortex-m4 \
+       -mthumb \
+       -ggdb3 \
+       -std=c11 \
+       -ffunction-sections \
+       -fdata-sections
+
+LDFLAGS=-nostartfiles \
+        -T $(LINKER_SCRIPT) \
+        -Wl,-Map=$(BUILD_DIR)/$(PROJECT).map \
+	-Wl,--start-group -lc -lm -Wl,--end-group
 
 
-CFLAGS = -Wall -g -mcpu=cortex-m4 -mthumb -O0
-#CFLAGS += -ffreestanding
-#CFLAGS = -Wall -g -mcpu=cortex-m4 --specs=nano.specs -mthumb -O0
-CFLAGS += -I$(CMSIS_PATH)/Include/ -I$(CMSIS_PATH)/Device/ST/STM32F4xx/Include/ -I$(ST_STD_PERIPH_LIB)/inc/ -I.
-CFLAGS += -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE=8000000
+CPPFLAGS += -Iinclude -I$(CMSIS_PATH)/Include/ -I$(CMSIS_PATH)/Device/ST/STM32F4xx/Include/ -I$(ST_STD_PERIPH_LIB)/inc/ -I.
+CPPFLAGS += -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE=8000000
 
-LINKER_SCRIPT = flash.ld
-LDFLAGS = -T$(LINKER_SCRIPT) -nostartfiles -Wl,-Map="$(TARGET).map" -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-#LDFLAGS = -T$(LINKER_SCRIPT) -nostartfiles -mcpu=cortex-m4 -Wl,-Map="$(TARGET).map" --specs=nano.specs -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-#LDFLAGS = -T$(LINKER_SCRIPT) -nostartfiles -mcpu=cortex-m4 --specs=nosys.specs -Wl,-Map="$(TARGET).map" --specs=nano.specs -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+#LDFLAGS = -T$(LINKER_SCRIPT) -nostartfiles -Wl,-Map="$(TARGET).map" -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 
-all: $(TARGET).elf $(TARGET).bin $(TARGET).diss
+all: $(BUILD_DIR)/$(PROJECT)
 
-%.bin: %.elf
-	$(OBJCOPY) -O binary $< $@
+$(BUILD_DIR)/$(PROJECT): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+	$(OBJDUMP) -DS $@ > $@.lst
+	$(OBJCOPY) -O binary $@ $@.bin
 
-%.diss: %.elf
-	$(OBJDUMP) -D $< > $@
+%.o: %.c | $(BUILD_DIR)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-%.elf: $(OBJECTS)
-	$(LD) $(LDFLAGS) -o $@ $(OBJECTS)
+$(BUILD_DIR):
+	mkdir $(BUILD_DIR)
 
-%.o: %.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
+clean:
+	-rm $(BUILD_DIR)/* $(OBJECTS) >/dev/null 2>&1
+
 
 .PRECIOUS: %.o
 
-clean:
-	-rm -rf $(TARGET).elf $(TARGET).bin $(TARGET).map $(TARGET).diss $(OBJECTS)
