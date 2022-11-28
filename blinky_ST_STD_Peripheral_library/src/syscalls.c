@@ -70,6 +70,7 @@ int _write (int file, char * ptr, int len) {
   return written;
 }
 
+// Blocking mode
 int _read (int file, char * ptr, int len) {
   int read = 0;
 
@@ -78,8 +79,12 @@ int _read (int file, char * ptr, int len) {
   }
 
   for (; len > 0; --len) {
-    //usart_serial_getchar(&stdio_uart_module, (uint8_t *)ptr++);
+    while (USART_GetFlagStatus(USART2, USART_FLAG_RXNE) == 0);
+    *((uint8_t *)ptr) = USART_ReceiveData(USART2);
+    if((*ptr == '\n')||(*ptr == '\r'))
+      break;
     read++;
+    ptr++;
   }
   return read;
 }
