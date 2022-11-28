@@ -1,0 +1,9 @@
+
+*.swp
+*.elf
+*.diss
+*.o
+*.map
+*.bin
+build/
+
