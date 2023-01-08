@@ -1,5 +1,6 @@
 
 #include <stdint.h>
+#include "system_stm32f4xx.h"
 
 extern uint32_t _estack;
 extern uint32_t _sidata;
@@ -34,6 +35,8 @@ void Reset_Handler(void)
     *pdst = 0;
     ++pdst;
   }
+
+  SystemInit();
 
   main();
 

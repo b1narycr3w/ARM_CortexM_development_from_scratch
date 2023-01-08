@@ -16,7 +16,9 @@ SECTIONS
 {
   .isr_vector :
   {
-    *(.isr_vector)
+    . = ALIGN(4);
+    KEEP(*(.isr_vector))
+    . = ALIGN(4);
   } > flash
 
   .text :
@@ -48,9 +50,9 @@ SECTIONS
     _edata = .;
   } > ram AT > flash
 
+  . = ALIGN(4);
   .bss :
   {
-    . = ALIGN(4);
     _sbss = .;
     *(.bss)
     *(.bss*)

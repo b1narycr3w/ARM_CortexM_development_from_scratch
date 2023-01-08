@@ -13,6 +13,7 @@ LINKER_SCRIPT=startup/flash.ld
 
 SOURCES = src/main.c \
 	  src/syscalls.c \
+	  src/system_stm32f4xx.c \
 	  startup/startup.c
 
 SOURCES += $(addprefix $(ST_STD_PERIPH)/src/, \
@@ -37,8 +38,10 @@ CPPFLAGS= -Iinclude \
 	  -I$(CMSIS)/Device/ST/STM32F4xx/Include/ \
 	  -I$(ST_STD_PERIPH)/inc/ \
 
-CPPFLAGS += -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER
+CPPFLAGS += -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE=8000000
+
 LDFLAGS=-nostartfiles \
+       	-mthumb \
 	-T $(LINKER_SCRIPT) \
 	-Wl,-Map=$(BUILD_DIR)/$(PROJECT).map \
 	-Wl,--gc-sections
