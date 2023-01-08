@@ -19,6 +19,7 @@ CFLAGS=-Wall \
        -fdata-sections
 
 LDFLAGS=-nostartfiles \
+	-mthumb \
 	-T $(LINKER_SCRIPT) \
 	-Wl,-Map=$(BUILD_DIR)/$(PROJECT).map \
 	-Wl,--gc-sections
