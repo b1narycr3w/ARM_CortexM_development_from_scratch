@@ -47,8 +47,7 @@ LDFLAGS=-nostartfiles \
 	-Wl,-Map=$(BUILD_DIR)/$(PROJECT).map \
 	-Wl,--gc-sections
 
-
-$(info OBJECTS = $(OBJECTS))
+DEPFILES = $(OBJECTS:%.o=%.d)
 
 all: $(BUILD_DIR)/$(PROJECT)
 
@@ -58,11 +57,15 @@ $(BUILD_DIR)/$(PROJECT): $(OBJECTS)
 	$(OBJCOPY) -O binary $@ $@.bin
 
 %.o: %.c | $(BUILD_DIR)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -MD -MP -MF $*.d -c $< -o $@
 
 $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
 
-clean:
+clean: clean_dependencies
 	-rm $(BUILD_DIR)/* $(OBJECTS) >/dev/null 2>&1
 
+clean_dependencies:
+	-rm $(DEPFILES)
+
+-include $(DEPFILES)

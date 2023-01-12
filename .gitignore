@@ -3,6 +3,7 @@
 *.elf
 *.diss
 *.o
+*.d
 *.map
 *.bin
 build/
