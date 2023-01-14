@@ -7,6 +7,8 @@
 
 #define LED4_PIN  GPIO_Pin_12
 
+extern uint32_t SystemCoreClock;
+
 void GPIO_Setup(void)
 {
   GPIO_InitTypeDef  GPIO_InitStructure;
@@ -62,6 +64,8 @@ int main(void)
   
   GPIO_Setup();
   USART_Setup();
+
+  printf("Initialized at %ldHz\r\n", SystemCoreClock);
 
   while(1)
   {

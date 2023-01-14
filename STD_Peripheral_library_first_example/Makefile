@@ -12,15 +12,15 @@ BUILD_DIR=build
 LINKER_SCRIPT=startup/flash.ld
 
 SOURCES = src/main.c \
-	  src/syscalls.c \
-	  src/system_stm32f4xx.c \
-	  startup/startup.c
+		  src/syscalls.c \
+		  src/system_stm32f4xx.c \
+		  startup/startup.c
 
 SOURCES += $(addprefix $(ST_STD_PERIPH)/src/, \
-	   stm32f4xx_gpio.c \
-	   stm32f4xx_rcc.c \
-	   stm32f4xx_usart.c \
-	   )
+		   stm32f4xx_gpio.c \
+		   stm32f4xx_rcc.c \
+		   stm32f4xx_usart.c \
+		   )
 
 OBJECTS = $(SOURCES:.c=.o)
 
@@ -33,21 +33,21 @@ CFLAGS=-Wall \
        -ffunction-sections \
        -fdata-sections
 
-CPPFLAGS= -Iinclude \
-	  -I$(CMSIS)/Include/ \
-	  -I$(CMSIS)/Device/ST/STM32F4xx/Include/ \
-	  -I$(ST_STD_PERIPH)/inc/ \
+CPPFLAGS=-Iinclude \
+		 -I$(CMSIS)/Include/ \
+		 -I$(CMSIS)/Device/ST/STM32F4xx/Include/ \
+		 -I$(ST_STD_PERIPH)/inc/ \
 
 CPPFLAGS += -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE=8000000
 
 LDFLAGS=-nostartfiles \
+        -mcpu=cortex-m4 \
        	-mthumb \
-	-T $(LINKER_SCRIPT) \
-	-Wl,-Map=$(BUILD_DIR)/$(PROJECT).map \
-	-Wl,--gc-sections
+		-T $(LINKER_SCRIPT) \
+		-Wl,-Map=$(BUILD_DIR)/$(PROJECT).map \
+		-Wl,--gc-sections
 
-
-$(info OBJECTS = $(OBJECTS))
+DEPFILES = $(OBJECTS:%.o=%.d)
 
 all: $(BUILD_DIR)/$(PROJECT)
 
@@ -57,11 +57,15 @@ $(BUILD_DIR)/$(PROJECT): $(OBJECTS)
 	$(OBJCOPY) -O binary $@ $@.bin
 
 %.o: %.c | $(BUILD_DIR)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -MD -MP -MF $*.d -c $< -o $@
 
 $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
 
-clean:
+clean: clean_dependencies
 	-rm $(BUILD_DIR)/* $(OBJECTS) >/dev/null 2>&1
 
+clean_dependencies:
+	-rm $(DEPFILES)
+
+-include $(DEPFILES)
