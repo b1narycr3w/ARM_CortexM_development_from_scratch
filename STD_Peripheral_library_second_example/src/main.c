@@ -83,14 +83,11 @@ int main(void)
     if(cnt > 0)
     {
       buf[cnt] = '\0';
-      printf("\r\n%s\r\n", buf);
+      printf("%s\r\n", buf);
     }
-    else
-    {
-      printf("Error\r\n");
-    }
-    GPIO_ToggleBits(GPIOD, LED4_PIN);
-    delay(500000);
+    GPIO_SetBits(GPIOD, LED4_PIN);
+    delay(15000);
+    GPIO_ResetBits(GPIOD, LED4_PIN);
   }
   return 0;
 }
