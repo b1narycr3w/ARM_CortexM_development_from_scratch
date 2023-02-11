@@ -31,7 +31,9 @@ CFLAGS=-Wall \
        -std=c11 \
        -ffreestanding \
        -ffunction-sections \
-       -fdata-sections
+       -fdata-sections \
+       -mfloat-abi=hard \
+       -mfpu=fpv4-sp-d16
 
 CPPFLAGS=-Iinclude \
 		 -I$(CMSIS)/Include/ \
@@ -45,7 +47,9 @@ LDFLAGS=-nostartfiles \
        	-mthumb \
 		-T $(LINKER_SCRIPT) \
 		-Wl,-Map=$(BUILD_DIR)/$(PROJECT).map \
-		-Wl,--gc-sections
+		-Wl,--gc-sections \
+        -mfloat-abi=hard \
+        -mfpu=fpv4-sp-d16
 
 DEPFILES = $(OBJECTS:%.o=%.d)
 
