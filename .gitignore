@@ -8,3 +8,6 @@
 *.map
 *.bin
 build/
+.cproject
+.project
+.settings
