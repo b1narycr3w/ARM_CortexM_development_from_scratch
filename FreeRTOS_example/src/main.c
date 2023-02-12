@@ -117,7 +117,7 @@ void read_button(void *arg)
 			BaseType_t ret = xQueueSend(myQueue, &msg, 0);
 			if(ret != pdTRUE)
 			{
-				printf("Error in read_button queue\n");
+				printf("Error in read_button queue\r\n");
 			}
 		}
 		else
@@ -137,11 +137,11 @@ void send_message(void *arg)
 		{
 			if(msg.type == MSG_TYPE_BUTTON_PRESSED)
 			{
-				printf("Button pressed. Time elapsed: %ld\n", msg.data);
+				printf("Button pressed. Time elapsed: %ld\r\n", msg.data);
 			}
 			else if(msg.type == MSG_TYPE_TIMER_TOUT)
 			{
-				printf("Timer time out. Count: %ld\n", msg.data);
+				printf("Timer time out. Count: %ld\r\n", msg.data);
 			}
 		}
 	}
@@ -157,23 +157,25 @@ void myTimer_callback(TimerHandle_t xTimer)
 	BaseType_t ret = xQueueSend(myQueue, &msg, 0);
 	if(ret != pdTRUE)
 	{
-		printf("Error in read_button queue\n");
+		printf("Error in read_button queue\r\n");
 	}
 }
 
 int main(void)
 {
   
+
   GPIO_Setup();
   USART_Setup();
   NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
 
   printf("Initialized at %ldHz\r\n", SystemCoreClock);
+  SystemCoreClockUpdate();
 
   myQueue = xQueueCreate(2, sizeof(msg_t));
 
-  xTaskCreate(read_button, "read_button", configMINIMAL_STACK_SIZE, (void *) NULL, tskIDLE_PRIORITY, NULL);
-  xTaskCreate(send_message, "send_message", configMINIMAL_STACK_SIZE, (void *) NULL, tskIDLE_PRIORITY, NULL);
+  xTaskCreate(read_button, "read_button", 512, (void *) NULL, tskIDLE_PRIORITY, NULL);
+  xTaskCreate(send_message, "send_message", 512, (void *) NULL, tskIDLE_PRIORITY, NULL);
 
   myTimer = xTimerCreate("myTimer", MY_TIMER_PERIOD_MS, pdTRUE, NULL, myTimer_callback);
   xTimerStart(myTimer, 0);
