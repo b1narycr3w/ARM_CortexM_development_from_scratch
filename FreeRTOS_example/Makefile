@@ -5,8 +5,9 @@ OBJDUMP=$(TOOLCHAIN_PREFIX)objdump
 
 ST_STD_PERIPH = ../lib/STM32F4xx_StdPeriph_Driver
 CMSIS = ../lib/CMSIS
+FREERTOS = ../lib/FreeRTOS
 
-PROJECT=read
+PROJECT=FreeRTOS_example
 BUILD_DIR=build
 
 LINKER_SCRIPT=startup/flash.ld
@@ -22,6 +23,18 @@ SOURCES += $(addprefix $(ST_STD_PERIPH)/src/, \
 		   stm32f4xx_usart.c \
 		   )
 
+SOURCES += $(addprefix $(FREERTOS)/, \
+		   croutine.c \
+		   event_groups.c \
+		   list.c \
+		   queue.c \
+		   stream_buffer.c \
+		   tasks.c \
+		   timers.c \
+		   portable/MemMang/heap_4.c \
+		   portable/GCC/ARM_CM4F/port.c \
+		   )
+		   
 OBJECTS = $(SOURCES:.c=.o)
 
 CFLAGS=-Wall \
@@ -32,13 +45,15 @@ CFLAGS=-Wall \
        -ffreestanding \
        -ffunction-sections \
        -fdata-sections \
-        -mfloat-abi=hard \
-        -mfpu=fpv4-sp-d16
+       -mfloat-abi=hard \
+       -mfpu=fpv4-sp-d16
 
 CPPFLAGS=-Iinclude \
 		 -I$(CMSIS)/Include/ \
 		 -I$(CMSIS)/Device/ST/STM32F4xx/Include/ \
 		 -I$(ST_STD_PERIPH)/inc/ \
+		 -I$(FREERTOS)/include \
+		 -I$(FREERTOS)/portable/GCC/ARM_CM4F \
 
 CPPFLAGS += -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE=8000000
 

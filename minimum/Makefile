@@ -16,12 +16,16 @@ CFLAGS=-Wall \
        -std=c11 \
        -ffreestanding \
        -ffunction-sections \
-       -fdata-sections
+       -fdata-sections \
+	    -mfloat-abi=hard \
+	    -mfpu=fpv4-sp-d16
 
 LDFLAGS=-nostartfiles \
 	-T $(LINKER_SCRIPT) \
 	-Wl,-Map=$(BUILD_DIR)/$(PROJECT).map \
-	-Wl,--gc-sections
+	-Wl,--gc-sections \
+    -mfloat-abi=hard \
+    -mfpu=fpv4-sp-d16
 
 SOURCES = main.c startup.c
 OBJECTS = $(addprefix $(BUILD_DIR)/, $(SOURCES:.c=.o))
